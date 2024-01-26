@@ -67,7 +67,7 @@ export default {
               this.$router.push(redirect)
             } else {
               // Se não houver uma rota de redirecionamento, vá para o dashboard
-              this.$router.push('/')
+              this.$router.push('/mytickets')
             }
           }
         }
