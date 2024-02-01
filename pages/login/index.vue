@@ -52,6 +52,8 @@ export default {
             password: this.dataLogin.password,
           },
         })
+
+        this.$router.push('/mytickets')
       } catch (error) {
         if (
           error.response &&
