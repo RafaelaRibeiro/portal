@@ -21,10 +21,15 @@ export default {
       },
     ],
   },
+  mode: 'spa',
 
   server: {
     host: '0.0.0.0',
     port: process.env.PORT || 3000,
+  },
+
+  store: {
+    state: 'localStorage',
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -49,6 +54,7 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     '@nuxtjs/auth-next',
+
     [
       'vue-toastification/nuxt',
       {
@@ -72,7 +78,6 @@ export default {
   },
 
   auth: {
-    watchLoggedIn: true,
     strategies: {
       local: {
         token: {
@@ -83,7 +88,7 @@ export default {
 
         user: {
           property: 'user',
-          //autoFetch: true,
+          autoFetch: true,
         },
 
         endpoints: {
@@ -97,8 +102,7 @@ export default {
     redirect: {
       login: '/login',
       logout: '/login',
-      callback: '/login',
-      home: '/tickets',
+      home: '/mytickets',
     },
   },
 

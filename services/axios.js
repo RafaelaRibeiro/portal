@@ -2,8 +2,8 @@
 import axios from 'axios'
 
 const axiosInstance = axios.create({
-  //baseURL: 'http://localhost:5555',
-  baseURL: 'https://backend.exatoinovacoes.com.br',
+  baseURL: 'http://localhost:3333',
+  //baseURL: 'https://backend.exatoinovacoes.com.br',
 })
 
 axiosInstance.interceptors.request.use((config) => {

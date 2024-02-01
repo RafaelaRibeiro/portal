@@ -1,8 +1,5 @@
 <template>
   <v-app dark>
-    <v-overlay :value="isLoading">
-      <v-progress-circular indeterminate size="64"></v-progress-circular>
-    </v-overlay>
     <t-header />
     <t-content />
   </v-app>

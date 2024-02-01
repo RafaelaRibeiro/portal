@@ -61,6 +61,7 @@
 <script>
 export default {
   props: ['dataLogin'],
+
   data() {
     return {
       show: false,

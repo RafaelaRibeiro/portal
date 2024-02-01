@@ -1,5 +1,13 @@
 <template>
   <div class="h-screen flex">
+    <v-overlay :value="isLoading">
+      <v-progress-circular
+        indeterminate
+        size="70"
+        :width="7"
+        color="#f3faff"
+      ></v-progress-circular>
+    </v-overlay>
     <img
       class="w-3/5 object-fill hidden md:block"
       src="../../assets/bg.jpg"
@@ -11,7 +19,11 @@
         <img class="w-[350px] mx-auto" src="~/assets/logo.jpg" alt="" />
       </div>
       <div>
-        <login-form :dataLogin="dataLogin" @signin="signin" />
+        <login-form
+          :dataLogin="dataLogin"
+          :isLoading="isLoading"
+          @signin="signin"
+        />
       </div>
     </div>
   </div>
@@ -19,18 +31,21 @@
 
 <script>
 import LoginForm from '../../components/login/LoginForm.vue'
+import Loading from '~/components/loading/Loading.vue'
 export default {
-  components: { LoginForm },
+  components: { LoginForm, Loading },
   layout: 'auth',
   data() {
     return {
       dataLogin: {},
+      isLoading: false,
     }
   },
 
   methods: {
     async signin() {
       try {
+        this.isLoading = true
         await this.$auth.loginWith('local', {
           data: {
             email: this.dataLogin.email,
@@ -53,25 +68,9 @@ export default {
           })
           return
         }
+      } finally {
+        this.isLoading = false
       }
-      this.$watch(
-        () => this.$auth.loggedIn,
-        (loggedIn) => {
-          if (loggedIn) {
-            const redirect =
-              this.$auth.$storage.getLocalStorage('auth.redirect')
-            if (redirect) {
-              // Remove a rota de redirecionamento para não ser usada novamente
-              this.$auth.$storage.setLocalStorage('auth.redirect', null)
-              // Redireciona para a rota de redirecionamento
-              this.$router.push(redirect)
-            } else {
-              // Se não houver uma rota de redirecionamento, vá para o dashboard
-              this.$router.push('/mytickets')
-            }
-          }
-        }
-      )
     },
   },
 }

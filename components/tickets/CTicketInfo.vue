@@ -30,17 +30,20 @@
     <div class="mx-1 mb-2">
       <span>
         <strong class="font-semibold text-gray-700">Deadline: </strong>
-        {{
-          ticket.deadline
-            ? new Date(ticket.deadline).toLocaleDateString('pt-br', options)
-            : ''
-        }}
+        {{ formattedDeadline }}
       </span>
     </div>
   </div>
 </template>
 
 <script>
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.extend(localizedFormat)
 export default {
   props: ['ticket', 'situation'],
   data() {
@@ -51,6 +54,25 @@ export default {
         day: '2-digit',
       },
     }
+  },
+
+  computed: {
+    formattedDeadline() {
+      if (this.ticket.deadline) {
+        const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
+        const zonedDeadline = dayjs(this.ticket.deadline).tz(userTimeZone)
+
+        const adjustedDeadline = zonedDeadline
+          .add(23, 'hours')
+          .add(59, 'minutes')
+          .add(59, 'seconds')
+
+        return adjustedDeadline.format('DD/MM/YYYY')
+      } else {
+        return null
+      }
+    },
   },
 }
 </script>

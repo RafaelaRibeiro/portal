@@ -102,12 +102,18 @@ export default {
   },
   computed: {
     loggedUser() {
-      return this.$auth.user.name
+      return this.$auth.user?.name
     },
   },
   methods: {
     async logout() {
-      await this.$auth.logout()
+      try {
+        await this.$auth.logout()
+
+        this.$router.push('/login')
+      } catch (error) {
+        console.error('Erro durante o logout:', error)
+      }
     },
   },
 }

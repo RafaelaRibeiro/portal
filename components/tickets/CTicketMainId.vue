@@ -2,6 +2,13 @@
   <div
     class="mx-4 md:mx-10 my-5 pb-4 grid gap-3 md:grid-cols-5 min-h-screen md:min-h-[79vh]"
   >
+    <v-overlay :value="isLoading">
+      <v-progress-circular
+        indeterminate
+        size="64"
+        color="primary"
+      ></v-progress-circular>
+    </v-overlay>
     <div class="md:col-span-4 bg-white p-4 max-h-[79vh] overflow-y-auto">
       <div class="flex items-center justify-between">
         <h1 class="headline font-weight-light">
@@ -110,9 +117,10 @@
 import CTicketMainIdItem from './CTicketMainIdItem.vue'
 import CTicketInfo from './CTicketInfo.vue'
 import ticketsService from '~/services/ticketsService'
+import Loading from '~/components/loading/Loading.vue'
 
 export default {
-  components: { CTicketMainIdItem, CTicketInfo },
+  components: { CTicketMainIdItem, CTicketInfo, Loading },
   data() {
     return {
       ticket: {},
@@ -123,6 +131,7 @@ export default {
       content: [],
       edit: false,
       ticket_content_id: null,
+      isLoading: false,
       rules: {
         required: (value) => !!value || 'Campo obrigatório.',
       },
@@ -156,12 +165,15 @@ export default {
   methods: {
     async getTicketById() {
       try {
+        this.isLoading = true
         const ticket = await ticketsService.findOne(`${this.$route.params.id}`)
         this.ticket = ticket.ticket
         this.content = ticket.content
         this.situation = ticket.ticket.situation
       } catch (error) {
         console.error('An error occurred while fetching users:', error)
+      } finally {
+        this.isLoading = false
       }
     },
 
@@ -184,6 +196,7 @@ export default {
         this.reply.content = null
         this.getTicketById()
       } catch (error) {
+        this.showEditor = false
         console.error('An error occurred while fetching reply:', error)
       }
     },
@@ -227,6 +240,11 @@ export default {
       try {
         await ticketsService.update(`${this.$route.params.id}`, {
           situation_id: 2,
+          deadline: this.ticket.deadline,
+        })
+        this.getTicketById()
+        this.$toast.success('Chamado encerrado', {
+          position: 'top-center',
         })
       } catch (error) {
         console.log(error)

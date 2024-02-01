@@ -1,5 +1,13 @@
 <template>
   <div class="m-0 p-0">
+    <v-overlay :value="isLoading">
+      <v-progress-circular
+        indeterminate
+        size="70"
+        :width="7"
+        color="#f3faff"
+      ></v-progress-circular>
+    </v-overlay>
     <div class="m-4 flex items-center">
       <span class="text-2xl">Novo chamado</span>
       <v-spacer></v-spacer>
@@ -101,9 +109,10 @@
 <script>
 import Upload from '../UI/Upload.vue'
 import ticketsService from '~/services/ticketsService'
+import Loading from '~/components/loading/Loading.vue'
 
 export default {
-  components: { Upload },
+  components: { Upload, Loading },
 
   props: ['users', 'priorities', 'categories', 'clients'],
 
@@ -122,6 +131,7 @@ export default {
         text: '',
         color: '',
       },
+      isLoading: false,
       rules: {
         required: (value) => !!value || 'Campo obrigatório.',
       },
@@ -152,23 +162,30 @@ export default {
       this.approvers = await ticketsService.getApprovers(this.ticket.client_id)
     },
     async saveTicket() {
-      const response = await this.$axios.post('/tickets', {
-        user_id: this.$auth.user.id,
-        category_id: this.ticket.category_id,
-        priority_id: this.ticket.priority_id,
-        subject: this.ticket.subject,
-        approver_id: this.ticket.approver_id,
-        client_id: this.ticket.client_id,
-        department_id: this.$auth.user.department_id,
-        content: this.ticket.content,
-      })
+      try {
+        this.isLoading = true
+        const response = await this.$axios.post('/tickets', {
+          user_id: this.$auth.user.id,
+          category_id: this.ticket.category_id,
+          priority_id: this.ticket.priority_id,
+          subject: this.ticket.subject,
+          approver_id: this.ticket.approver_id,
+          client_id: this.ticket.client_id,
+          department_id: this.$auth.user.department_id,
+          content: this.ticket.content,
+        })
 
-      this.ticket_content_id = response.data.TicketContent[0].id
-      await this.sendFile()
-      this.$emit('dialogCreate', false)
-      this.$router.push({
-        path: `/tickets/${response.data.id}`,
-      })
+        this.ticket_content_id = response.data.TicketContent[0].id
+        await this.sendFile()
+        this.$emit('dialogCreate', false)
+        this.$router.push({
+          path: `/tickets/${response.data.id}`,
+        })
+      } catch (error) {
+        console.log(error)
+      } finally {
+        this.isLoading = false
+      }
     },
 
     async sendFile() {
