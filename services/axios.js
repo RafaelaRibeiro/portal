@@ -1,9 +1,19 @@
 // api/axios.js
+import dotenv from 'dotenv'
+dotenv.config()
 import axios from 'axios'
 
+console.log(
+  process.env.NODE_ENV === 'production'
+    ? process.env.VUE_APP_URL_PROD
+    : process.env.VUE_APP_URL_DEV
+)
+
 const axiosInstance = axios.create({
-  //baseURL: 'http://localhost:3333',
-  baseURL: 'https://backend.exatoinovacoes.com.br',
+  baseURL:
+    process.env.NODE_ENV === 'production'
+      ? process.env.VUE_APP_URL_PROD
+      : process.env.VUE_APP_URL_DEV,
 })
 
 axiosInstance.interceptors.request.use((config) => {

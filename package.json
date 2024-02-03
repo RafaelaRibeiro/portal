@@ -17,6 +17,7 @@
     "core-js": "^3.25.3",
     "dayjs": "^1.11.7",
     "defu": "^6.1.2",
+    "dotenv": "^16.4.1",
     "nuxt": "^2.15.8",
     "vue": "^2.7.10",
     "vue-server-renderer": "^2.7.10",
@@ -27,6 +28,7 @@
     "vuetify": "^2.6.10"
   },
   "devDependencies": {
+    "@nuxtjs/dotenv": "^1.4.2",
     "@nuxtjs/vuetify": "^1.12.3",
     "autoprefixer": "^10.4.14",
     "eslint-config-prettier": "^8.5.0",
