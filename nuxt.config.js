@@ -21,7 +21,7 @@ export default {
       },
     ],
   },
-  mode: 'spa',
+  ssr: false,
 
   server: {
     host: '0.0.0.0',
@@ -101,8 +101,7 @@ export default {
 
     redirect: {
       login: '/login',
-      logout: '/login',
-      home: '/mytickets',
+      logout: '/',
     },
   },
 

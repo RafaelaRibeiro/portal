@@ -35,10 +35,21 @@
         class="custom-select"
       ></v-select>
       <div class="mx-6">
-        <v-btn small dark @click="approveTickets" color="#004011"
+        <v-btn
+          v-show="showApproveButton"
+          small
+          dark
+          @click="approveTickets"
+          color="#004011"
           >Aprovar</v-btn
         >
-        <v-btn small @click="deleteTickets" color="error">excluir</v-btn>
+        <v-btn
+          v-show="showDeleteButton"
+          small
+          @click="deleteTickets"
+          color="error"
+          >excluir</v-btn
+        >
       </div>
     </div>
 
@@ -125,6 +136,7 @@ export default {
       search: null,
       dialogCreate: false,
       showApproveButton: false,
+      showDeleteButton: false,
       selectedItems: [],
       tickets: [],
       users: [],
@@ -271,6 +283,7 @@ export default {
 
         this.getTickets()
         this.getData()
+        this.showDeleteButton = false
         this.$toast.success('Chamado(s) Excluído(s)', {
           position: 'top-center',
         })
@@ -287,6 +300,7 @@ export default {
         await this.$axios.patch('/tickets/approval', this.selectedIds)
         this.getTickets()
         this.getData()
+        this.showApproveButton = false
         this.$toast.success('Chamado(s) Aprovados(s)', {
           position: 'top-center',
         })
@@ -326,15 +340,18 @@ export default {
     },
   },
 
-  watch: {
-    selectedItems: {
-      handler(newSelectedItems) {
-        this.showApproveButton = newSelectedItems.some((item) =>
-          ['A', 'P'].includes(item.situation.type)
-        )
-      },
-      deep: true,
+  selectedItems: {
+    handler(newSelectedItems) {
+      this.showApproveButton = newSelectedItems.some((item) =>
+        ['A', 'P'].includes(item.situation.type)
+      )
+
+      const allHaveSituation1 = newSelectedItems.every(
+        (item) => item.situation_id === 1
+      )
+      this.showDeleteButton = allHaveSituation1
     },
+    deep: true,
   },
 }
 </script>
