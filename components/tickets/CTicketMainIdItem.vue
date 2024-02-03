@@ -37,8 +37,8 @@
             </div>
           </div>
         </div>
-        <div>
-          <p v-html="content.content" class="text-gray-600"></p>
+        <div class="max-w-4xl mx-auto">
+          <p v-html="content.content" class="text-gray-600 break-words"></p>
         </div>
         <div v-show="files.length">
           <div class="mb-2">

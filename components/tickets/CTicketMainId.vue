@@ -59,6 +59,9 @@
             class="mx-4"
             placeholder="Escreva aqui..."
             v-model="reply.content"
+            useCustomImageHandler
+            @dragover.prevent
+            @drop.prevent="onDrop"
           ></vue-editor>
         </no-ssr>
 
@@ -163,6 +166,16 @@ export default {
     },
   },
   methods: {
+    onDrop(e) {
+      const files = e.dataTransfer.files
+      if (files && files.length > 0) {
+        // pega primeiro arquivo
+        const file = files[0]
+
+        // adiciona na lista
+        this.files.push(file)
+      }
+    },
     async getTicketById() {
       try {
         this.isLoading = true
