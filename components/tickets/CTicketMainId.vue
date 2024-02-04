@@ -2,13 +2,7 @@
   <div
     class="mx-4 md:mx-10 my-5 pb-4 grid gap-3 md:grid-cols-5 min-h-screen md:min-h-[79vh]"
   >
-    <v-overlay :value="isLoading">
-      <v-progress-circular
-        indeterminate
-        size="64"
-        color="primary"
-      ></v-progress-circular>
-    </v-overlay>
+    <loading :isLoading="isLoading" />
     <div class="md:col-span-4 bg-white p-4 max-h-[79vh] overflow-y-auto">
       <div class="flex items-center justify-between">
         <h1 class="headline font-weight-light">
@@ -46,11 +40,24 @@
             v-show="btnClose"
             class="ma-2 white--text"
             color="#6c757d"
-            @click="closeTicket"
+            @click="isDialogVisible = true"
           >
             <span>Encerrar chamado</span></v-btn
           >
         </div>
+
+        <u-confirm-modal
+          :dialog="isDialogVisible"
+          :confirmText="confirmText"
+          :cancelText="cancelText"
+          :iconName="iconName"
+          @confirm="closeTicket"
+          @cancel="handleCancel"
+        >
+          <span class="text-lg text-gray-800">
+            Confirma encerrar o chamado?</span
+          >
+        </u-confirm-modal>
       </div>
 
       <div v-show="showEditor" class="my-3">
@@ -59,9 +66,6 @@
             class="mx-4"
             placeholder="Escreva aqui..."
             v-model="reply.content"
-            useCustomImageHandler
-            @dragover.prevent
-            @drop.prevent="onDrop"
           ></vue-editor>
         </no-ssr>
 
@@ -87,7 +91,7 @@
           </div>
 
           <div class="justify-self-end">
-            <v-btn @click="showEditor = false">Cancelar</v-btn>
+            <v-btn @click="onCancel">Cancelar</v-btn>
             <v-btn
               @click="saveReply"
               color="primary"
@@ -121,9 +125,10 @@ import CTicketMainIdItem from './CTicketMainIdItem.vue'
 import CTicketInfo from './CTicketInfo.vue'
 import ticketsService from '~/services/ticketsService'
 import Loading from '~/components/loading/Loading.vue'
+import UConfirmModal from '../UI/UConfirmModal.vue'
 
 export default {
-  components: { CTicketMainIdItem, CTicketInfo, Loading },
+  components: { CTicketMainIdItem, CTicketInfo, Loading, UConfirmModal },
   data() {
     return {
       ticket: {},
@@ -135,6 +140,10 @@ export default {
       edit: false,
       ticket_content_id: null,
       isLoading: false,
+      isDialogVisible: false,
+      confirmText: 'Sim',
+      cancelText: 'Não',
+      iconName: 'mdi-alert-outline',
       rules: {
         required: (value) => !!value || 'Campo obrigatório.',
       },
@@ -166,6 +175,11 @@ export default {
     },
   },
   methods: {
+    onCancel() {
+      this.showEditor = false
+      this.reply.content = ''
+    },
+
     onDrop(e) {
       const files = e.dataTransfer.files
       if (files && files.length > 0) {
@@ -189,9 +203,13 @@ export default {
         this.isLoading = false
       }
     },
+    handleCancel() {
+      this.isDialogVisible = false
+    },
 
     async saveReply() {
       try {
+        this.isLoading = true
         const response = await this.$axios.$post(
           `/tickets/${this.$route.params.id}/reply`,
           {
@@ -211,6 +229,8 @@ export default {
       } catch (error) {
         this.showEditor = false
         console.error('An error occurred while fetching reply:', error)
+      } finally {
+        this.isLoading = false
       }
     },
 
@@ -250,22 +270,29 @@ export default {
       this.edit = edit
     },
     async closeTicket() {
+      this.isDialogVisible = false
       try {
+        this.isLoading = true
         await ticketsService.update(`${this.$route.params.id}`, {
           situation_id: 2,
-          deadline: this.ticket.deadline,
+          deadline: new Date(),
         })
+
         this.getTicketById()
+
         this.$toast.success('Chamado encerrado', {
           position: 'top-center',
         })
       } catch (error) {
         console.log(error)
+      } finally {
+        this.isLoading = false
       }
     },
 
     async approveTicket() {
       try {
+        this.isLoading = true
         await ticketsService.approveById(`${this.$route.params.id}`)
         this.getTicketById()
         this.$toast.success('Chamado aprovado', {
@@ -273,10 +300,13 @@ export default {
         })
       } catch (error) {
         console.log(error)
+      } finally {
+        this.isLoading = false
       }
     },
     async disapproveTicket() {
       try {
+        this.isLoading = true
         await ticketsService.disapproveById(`${this.$route.params.id}`)
         this.getTicketById()
         this.$toast.success('Chamado recusado', {
@@ -284,6 +314,8 @@ export default {
         })
       } catch (error) {
         console.log(error)
+      } finally {
+        this.isLoading = false
       }
     },
   },

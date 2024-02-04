@@ -1,5 +1,6 @@
 <template>
   <div class="flex items-center">
+    <loading :isLoading="isLoading" />
     <div v-if="!edit" class="flex items-center">
       <img
         class="w-12 h-12 rounded-full mr-4"
@@ -67,7 +68,7 @@
         </div> -->
       </div>
     </div>
-    <div v-else>
+    <div v-else class="max-w-5xl px-4">
       <no-ssr>
         <vue-editor
           placeholder="Escreva aqui..."
@@ -137,9 +138,10 @@
 <script>
 import dayjs from 'dayjs'
 import UConfirmModal from '../UI/UConfirmModal.vue'
+import Loading from '~/components/loading/Loading.vue'
 export default {
   props: ['content'],
-  components: { UConfirmModal },
+  components: { UConfirmModal, Loading },
   data() {
     return {
       files: [],
@@ -148,6 +150,7 @@ export default {
       confirmText: 'Sim',
       cancelText: 'Não',
       iconName: 'mdi-alert-outline',
+      isLoading: false,
     }
   },
   created() {
@@ -167,15 +170,20 @@ export default {
     },
 
     async getFiles() {
-      const result = await this.$axios.get(`/tickets/${this.content.id}/files`)
-      this.files = result.data
+      try {
+        const result = await this.$axios.get(
+          `/tickets/${this.content.id}/files`
+        )
+        this.files = result.data
+      } catch (error) {
+      } finally {
+      }
     },
 
     profile(profile) {
       const profiles = {
         A: 'Atendente',
-        O: 'Atendente',
-        C: 'Cliente',
+        U: 'Cliente',
       }
       return profiles[profile] || 'Cliente'
     },
@@ -195,6 +203,7 @@ export default {
         const fileKey = this.files[index].key
 
         try {
+          this.isLoading = true
           await this.$axios.delete(`/files`, {
             data: {
               file_id: fileId,
@@ -205,12 +214,15 @@ export default {
           this.isDialogVisible = false
         } catch (error) {
           console.error('Error removing file:', error)
+        } finally {
+          this.isLoading = false
         }
       }
     },
 
     async updateTicketContent() {
       try {
+        this.isLoading = true
         await this.$axios.patch(`/tickets/${this.content.id}/content`, {
           set: this.content.content,
         })
@@ -221,6 +233,8 @@ export default {
         this.$emit('edit', false)
       } catch (error) {
         console.log(error)
+      } finally {
+        this.isLoading = false
       }
     },
   },

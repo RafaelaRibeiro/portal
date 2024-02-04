@@ -3,11 +3,13 @@
     v-if="isLoading"
     class="fixed inset-0 flex items-center justify-center bg-opacity-50 bg-gray-900"
   >
-    <div class="flex flex-col items-center space-x-2 text-white">
-      <div
-        class="custom-loader rounded-full h-8 w-8 border-t-2 border-b-2"
-      ></div>
-      <span class="text-2xl">Processando...</span>
+    <div class="flex flex-col items-center space-x-2">
+      <v-progress-circular
+        indeterminate
+        size="70"
+        :width="7"
+        color="#f3faff"
+      ></v-progress-circular>
     </div>
   </div>
 </template>

@@ -1,13 +1,6 @@
 <template>
   <div class="m-0 p-0">
-    <v-overlay :value="isLoading">
-      <v-progress-circular
-        indeterminate
-        size="70"
-        :width="7"
-        color="#f3faff"
-      ></v-progress-circular>
-    </v-overlay>
+    <loading :isLoading="isLoading" />
     <div class="m-4 flex items-center">
       <span class="text-2xl">Novo chamado</span>
       <v-spacer></v-spacer>
@@ -163,7 +156,6 @@ export default {
     },
     async saveTicket() {
       try {
-        this.isLoading = true
         const response = await this.$axios.post('/tickets', {
           user_id: this.$auth.user.id,
           category_id: this.ticket.category_id,
@@ -184,7 +176,6 @@ export default {
       } catch (error) {
         console.log(error)
       } finally {
-        this.isLoading = false
       }
     },
 
