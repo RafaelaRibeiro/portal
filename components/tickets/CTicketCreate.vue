@@ -76,6 +76,7 @@
             item-value="id"
             outlined
             dense
+            no-data-text="Sem aprovadores cadastrados"
           >
           </v-autocomplete>
         </div>
