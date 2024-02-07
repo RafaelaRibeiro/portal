@@ -229,15 +229,13 @@ export default {
         this.rules.required(this.ticket.priority_id) === true
       const isSubjectValid = this.rules.required(this.ticket.subject) === true
       const isContentValid = this.rules.required(this.ticket.content) === true
-      const isClientValid = this.rules.required(this.ticket.client_id) === true
 
       const isValid =
         isCategoryValid &&
         isPriorityValid &&
         isSubjectValid &&
         isContentValid &&
-        isContentValid &&
-        isClientValid
+        isContentValid
 
       return isValid
     },
