@@ -2,14 +2,16 @@
   <input
     :type="inputType"
     class="rounded px-4 py-2 text-base block w-full text-gray-700 leading-tight bg-white border border-solid border-gray-500 focus:border-2 focus:outline-none focus:border-colorButton hover:border-colorButton"
-    v-model="modelValue"
+    :value="modelValue"
+    @input="$emit('input', $event.target.value)"
     v-if="maskOptions"
     v-mask="maskOptions"
   />
   <input
     :type="inputType"
     class="rounded px-4 py-2 text-base block w-full text-gray-700 leading-tight bg-white border border-solid border-gray-500 focus:border-2 focus:outline-none focus:border-colorButton hover:border-colorButton"
-    v-model="modelValue"
+    :value="modelValue"
+    @input="$emit('input', $event.target.value)"
     v-else
   />
 </template>
@@ -28,6 +30,12 @@ export default {
     maskOptions: {
       type: [String, Array, Object],
       default: null,
+    },
+  },
+
+  methods: {
+    updateValue(event) {
+      this.$emit('update:modelValue', event.target.value)
     },
   },
 }

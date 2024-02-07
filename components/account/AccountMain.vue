@@ -7,7 +7,13 @@
       <v-divider></v-divider>
 
       <div class="flex flex-row my-6">
-        <v-btn class="mt-1.5" small dark color="primary">
+        <v-btn
+          class="mt-1.5"
+          small
+          dark
+          color="primary"
+          @click="dialogPassword = true"
+        >
           <v-icon small left>mdi-key</v-icon> Alterar senha</v-btn
         >
       </div>
@@ -48,7 +54,11 @@
         </div>
 
         <div class="flex items-center cursor-pointer w-1/2 mt-5">
-          <input type="checkbox" v-model="user.whatsapp" class="w-4 h-4 mr-2" />
+          <input
+            type="checkbox"
+            v-model="user.whatsapp"
+            class="w-4 h-4 mr-2 accent-default"
+          />
           <label class="text-sm text-gray-700">Whatsapp</label>
         </div>
       </div>
@@ -59,7 +69,7 @@
     </div>
 
     <v-divider vertical class="pl-5"></v-divider>
-    <div class="p-4 w-1/2">
+    <div class="p-4 pt-8 w-1/2">
       <div class="flex flex-col items-center justify-center">
         <img
           src="../../assets/avatar.png"
@@ -69,6 +79,7 @@
         <v-btn small color="primary" dark class="mt-4">Alterar imagem</v-btn>
       </div>
     </div>
+
     <v-dialog v-model="dialogPassword" max-width="400px">
       <div class="w-full bg-white rounded-lg shadow p-6">
         <h1 class="font-medium text-xl mb-6">Altere sua senha</h1>
@@ -79,6 +90,7 @@
               outlined
               dense
               placeholder="Digite sua senha atual"
+              v-model="password"
             ></v-text-field>
 
             <div>
@@ -87,6 +99,7 @@
                 outlined
                 dense
                 placeholder="Digite sua nova senha"
+                v-model="newPassword"
               ></v-text-field>
             </div>
             <div>
@@ -95,12 +108,18 @@
                 outlined
                 dense
                 placeholder="Confirme sua nova senha"
+                v-model="passwordConfirm"
               ></v-text-field>
             </div>
 
             <div class="flex justify-end mt-6">
-              <v-btn class="mr-4 white--text" color="#042d65">Salvar</v-btn>
-              <v-btn color="error">Cancelar</v-btn>
+              <v-btn
+                @click="updatePassword"
+                class="mr-4 white--text"
+                color="primary"
+                >Salvar</v-btn
+              >
+              <v-btn color="error" @click="onCancel">Cancelar</v-btn>
             </div>
           </v-container>
         </v-form>
@@ -141,6 +160,32 @@ export default {
     },
     toggleCheckbox() {
       this.isChecked = !this.isChecked
+    },
+
+    onCancel() {
+      this.dialogPassword = false
+    },
+
+    async updatePassword() {
+      try {
+        await usersService.updatePassword(
+          this.$auth.user.id,
+          this.password,
+          this.newPassword,
+          this.passwordConfirm
+        )
+        this.dialogPassword = false
+        this.$toast.success('Senha Alterada com Sucesso', {
+          position: 'top-center',
+        })
+      } catch (error) {
+        if (error.response && error.response.data) {
+          const { data } = error.response
+          this.$toast.error(data.message, { position: 'top-center' })
+        } else {
+          console.error('Erro de resposta:', error)
+        }
+      }
     },
   },
 

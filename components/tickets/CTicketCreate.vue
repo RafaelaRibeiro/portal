@@ -59,7 +59,7 @@
             v-model="ticket.client_id"
             :items="clients"
             item-text="client.trade_name"
-            item-value="client.id"
+            item-value="client_id"
             outlined
             dense
             @change="getApprovers"
