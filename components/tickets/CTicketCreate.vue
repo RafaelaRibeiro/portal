@@ -116,6 +116,7 @@ export default {
       text: 'Tickets',
       ticket: {
         priority_id: 2,
+        client_id: null,
       },
       approvers: [],
       fileInputRef: null,
@@ -133,7 +134,11 @@ export default {
   },
 
   mounted() {
-    this.ticket.client_id = this.clientDefault
+    // Verifica se há apenas uma opção disponível em 'this.clients'
+    if (this.clients.length === 1) {
+      // Define 'ticket.client_id' como o valor da única opção
+      this.ticket.client_id = this.clients[0].client_id
+    }
   },
 
   methods: {
@@ -217,11 +222,18 @@ export default {
         this.isUploading = false
       }
     },
+
+    updateClientDefault() {
+      // Define 'ticket.client_id' com base na lista de clientes
+      this.ticket.client_id =
+        this.clients.length === 1 ? this.clients[0].client_id : undefined
+    },
   },
 
   computed: {
-    clientDefault() {
-      return this.clients.length === 1 ? this.clients[0].client_id : []
+    cliente() {
+      const isClientSelected = this.rules.required(this.ticket.client_id)
+      return isClientSelected
     },
     isFormValid() {
       const isCategoryValid =
@@ -230,13 +242,15 @@ export default {
         this.rules.required(this.ticket.priority_id) === true
       const isSubjectValid = this.rules.required(this.ticket.subject) === true
       const isContentValid = this.rules.required(this.ticket.content) === true
-
+      const isClientIdValid =
+        this.rules.required(this.ticket.client_id) === true
       const isValid =
         isCategoryValid &&
         isPriorityValid &&
         isSubjectValid &&
         isContentValid &&
-        isContentValid
+        isContentValid &&
+        isClientIdValid
 
       return isValid
     },

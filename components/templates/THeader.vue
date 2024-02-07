@@ -3,7 +3,7 @@
     <nav class="px-2 h-full relative">
       <div class="grid grid-cols-12 h-full content-center">
         <div class="col-span-2">
-          <img src="~/assets/logo.jpg" alt="" class="w-52" />
+          <img src="~/assets/logo.jpg" alt="" class="w-48" />
         </div>
 
         <div class="col-span-7">
@@ -16,21 +16,17 @@
               :key="item.id"
             >
               <v-btn color="#2271a1" text link :to="item.to">
-                <span class="font-semibold text-sm"> {{ item.title }}</span>
+                <span class="font-semibold text-xs"> {{ item.title }}</span>
               </v-btn>
             </li>
           </ul>
         </div>
         <div class="col-start-10 col-span-3 flex justify-end items-center mr-6">
           <span
-            class="mr-2 uppercase text-sm text-default leading-normal font-semibold tracking-wider whitespace-nowrap"
+            class="mr-2 uppercase text-xs text-default leading-normal font-semibold tracking-wider whitespace-nowrap"
             >{{ loggedUser }}</span
           >
-          <img
-            class="w-12 h-12 rounded-full mr-4"
-            src="../../assets/avatar.png"
-            alt="Avatar "
-          />
+
           <v-menu transition="scale-transition" bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="#2271a1" icon v-bind="attrs" v-on="on">

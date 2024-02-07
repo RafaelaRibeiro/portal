@@ -47,11 +47,24 @@
         <v-btn
           v-show="showDeleteButton"
           small
-          @click="deleteTickets"
+          @click="isDialogVisible = true"
           color="error"
           >excluir</v-btn
         >
       </div>
+
+      <u-confirm-modal
+        :dialog="isDialogVisible"
+        :confirmText="confirmText"
+        :cancelText="cancelText"
+        :iconName="iconName"
+        @confirm="deleteTickets"
+        @cancel="handleCancel"
+      >
+        <span class="text-lg text-gray-800">
+          Confirma excluir os chamados selecionados?</span
+        >
+      </u-confirm-modal>
     </div>
 
     <div class="p-3">
@@ -128,14 +141,19 @@
 <script>
 import CTicketCreate from '../tickets/CTicketCreate.vue'
 import dayjs from 'dayjs'
+import UConfirmModal from '../UI/UConfirmModal.vue'
 export default {
-  components: { CTicketCreate },
+  components: { CTicketCreate, UConfirmModal },
   data() {
     return {
       dialogCreate: false,
       loading: false,
       search: null,
       dialogCreate: false,
+      isDialogVisible: false,
+      confirmText: 'Sim',
+      cancelText: 'Não',
+      iconName: 'mdi-alert-outline',
       showApproveButton: false,
       showDeleteButton: false,
       selectedItems: [],
@@ -253,6 +271,10 @@ export default {
       this.dialogCreate = dialogCreate
     },
 
+    handleCancel() {
+      this.isDialogVisible = false
+    },
+
     showTickets(id, card) {
       if (this.activeCard === id) {
         this.activeCard = null
@@ -316,6 +338,7 @@ export default {
         this.getTickets()
         this.getData()
         this.showDeleteButton = false
+        this.isDialogVisible = false
         this.$toast.success('Chamado(s) Excluído(s)', {
           position: 'top-center',
         })

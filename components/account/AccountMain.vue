@@ -69,7 +69,7 @@
     </div>
 
     <v-divider vertical class="pl-5"></v-divider>
-    <div class="p-4 pt-8 w-1/2">
+    <!-- <div class="p-4 pt-8 w-1/2">
       <div class="flex flex-col items-center justify-center">
         <img
           src="../../assets/avatar.png"
@@ -78,7 +78,7 @@
         />
         <v-btn small color="primary" dark class="mt-4">Alterar imagem</v-btn>
       </div>
-    </div>
+    </div> -->
 
     <v-dialog v-model="dialogPassword" max-width="400px">
       <div class="w-full bg-white rounded-lg shadow p-6">
