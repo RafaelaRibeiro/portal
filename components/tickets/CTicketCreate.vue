@@ -131,9 +131,9 @@ export default {
     }
   },
 
-  // mounted() {
-  //   this.ticket.client_id = this.clientDefault
-  // },
+  mounted() {
+    this.ticket.client_id = this.clientDefault
+  },
 
   methods: {
     onFileInputRef(ref) {
