@@ -3,12 +3,6 @@ import dotenv from 'dotenv'
 dotenv.config()
 import axios from 'axios'
 
-console.log(
-  process.env.NODE_ENV === 'production'
-    ? process.env.VUE_APP_URL_PROD
-    : process.env.VUE_APP_URL_DEV
-)
-
 const axiosInstance = axios.create({
   baseURL:
     process.env.NODE_ENV === 'production'

@@ -21,7 +21,8 @@ export default {
       },
     ],
   },
-  ssr: false,
+
+  mode: 'spa',
 
   server: {
     host: '0.0.0.0',

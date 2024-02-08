@@ -114,7 +114,7 @@
 
             <div class="flex justify-end mt-6">
               <v-btn
-                @click="updatePassword"
+                @click="changePassword"
                 class="mr-4 white--text"
                 color="primary"
                 >Salvar</v-btn
@@ -166,7 +166,7 @@ export default {
       this.dialogPassword = false
     },
 
-    async updatePassword() {
+    async changePassword() {
       try {
         await usersService.updatePassword(
           this.$auth.user.id,
@@ -179,12 +179,16 @@ export default {
           position: 'top-center',
         })
       } catch (error) {
-        if (error.response && error.response.data) {
-          const { data } = error.response
-          this.$toast.error(data.message, { position: 'top-center' })
-        } else {
-          console.error('Erro de resposta:', error)
-        }
+        const { data } = error.response
+        // Se data.message for uma array, vamos juntar os elementos em uma única string
+        const errorMessage = Array.isArray(data.message)
+          ? data.message.join(' ')
+          : data.message
+        console.log(error)
+        console.log(errorMessage)
+        this.$toast.error(errorMessage || 'Erro ao atualizar os dados', {
+          position: 'top-center',
+        })
       }
     },
   },

@@ -10,20 +10,18 @@ const usersService = {
     }
   },
 
-  async updatePassword(id, password, newPassword, confirmPassword) {
+  async updatePassword(id, password, newPassword, passwordConfirm) {
     try {
-      const responde = await axiosInstance.put(
-        `/users/${id}}/change-password`,
-        {
-          password,
-          newPassword,
-          confirmPassword,
-        }
-      )
+      const response = await axiosInstance.put(`/users/${id}/change-password`, {
+        password,
+        newPassword,
+        passwordConfirm,
+      })
 
-      return responde.data
+      return response.data
     } catch (error) {
-      console.log(error)
+      console.log('Deu ruim!')
+      throw error
     }
   },
   async updateUser(id, name, email, fone, extension, mobile, whatsapp) {
